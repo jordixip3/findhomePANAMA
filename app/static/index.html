@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FindHome Panamá — Vivienda Compartida y Reparto de Arriendo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <link rel="stylesheet" href="static/css/style.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <a href="./" class="brand-link">
+          <div class="brand-logo">FH</div>
+          <div class="brand-text">
+            <span class="brand-name">FindHome Panamá</span>
+            <span class="brand-tagline">Vivienda Digna y Minicomunidades</span>
+          </div>
+        </a>
+      </div>
+
+      <nav class="main-nav">
+        <a href="#properties-section" class="nav-link">Viviendas</a>
+        <a href="#calculator-section" class="nav-link">Calculadora</a>
+        <a href="#map-section" class="nav-link">Mapa</a>
+        <a href="https://wa.me/34603331391?text=Hello%20FindHome Panamá" target="_blank" class="nav-link whatsapp-nav">
+          <span class="wsp-icon">💬</span> WhatsApp +34 603 331 391
+        </a>
+        <button id="btn-open-admin" class="btn btn-outline btn-sm">Acceso Administrador</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-badge">🌱 Minicomunidades Verificadas</div>
+      <h1 class="hero-title">Vivienda Digna y Arriendo Compartido en las Provincias de Panamá</h1>
+      <p class="hero-subtitle">Encuentra apartamentos de alta gama en Ciudad de Panamá y provincias, divide el arriendo en dólares ($ USD) y comparte con profesionales.</p>
+
+      <!-- Portals Stream -->
+      <div class="portals-stream-container">
+        <span class="stream-label">Portales Conectados:</span>
+        <div class="portals-badges" id="portals-badges-list">
+          <span class="portal-badge active" data-portal="Encuentra24 Panamá">🇵🇦 Encuentra24</span>
+<span class="portal-badge active" data-portal="CompreoAlquile Panamá">🇵🇦 CompreoAlquile</span>
+<span class="portal-badge active" data-portal="Properati Panamá">🇵🇦 Properati PA</span>
+<span class="portal-badge active" data-portal="Inmuebles Panamá Direct">🇵🇦 Inmuebles PA</span>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rent Split Calculator Section -->
+  <section id="calculator-section" class="calculator-section">
+    <div class="section-container">
+      <div class="calc-card">
+        <div class="calc-header">
+          <h2>Calculadora de Reparto de Arriendo</h2>
+          <p>Descubre cuánto ahorras viviendo con roomies compatibles</p>
+        </div>
+        <div class="calc-grid">
+          <div class="calc-input-group">
+            <label>Arriendo Mensual Total ($ USD)</label>
+            <input type="number" id="calc-total-rent" value="1600" step="50">
+          </div>
+          <div class="calc-input-group">
+            <label>Número de Roommates</label>
+            <div class="roommate-buttons">
+              <button class="btn-roommate" data-rooms="2">2</button>
+              <button class="btn-roommate" data-rooms="3">3</button>
+              <button class="btn-roommate active" data-rooms="4">4</button>
+              <button class="btn-roommate" data-rooms="5">5</button>
+            </div>
+          </div>
+          <div class="calc-result-box">
+            <div class="res-item">
+              <span class="res-label">Pago por Persona:</span>
+              <span class="res-value" id="calc-per-person">-</span>
+            </div>
+            <div class="res-item savings">
+              <span class="res-label">Ahorro Estimado vs Solo:</span>
+              <span class="res-savings" id="calc-savings">-</span>
+            </div>
+            <a id="btn-calc-whatsapp" href="#" target="_blank" class="btn btn-primary btn-block">
+              Reservar este Reparto en WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filters Section -->
+  <section class="filters-section">
+    <div class="section-container">
+      <div class="filters-bar">
+        <div class="filter-item">
+          <label>Buscar por Ciudad</label>
+          <input type="text" id="filter-city" placeholder="Ej. Ciudad...">
+        </div>
+        <div class="filter-item">
+          <label>Provincia / Zona</label>
+          <select id="filter-subdivision">
+            <option value="">Todas las Provincias de Panamá</option>
+            <option value="PAN">Panamá Centro</option>
+<option value="PO">Panamá Oeste</option>
+<option value="CHI">Chiriquí</option>
+<option value="COL">Colón</option>
+<option value="COC">Coclé</option>
+<option value="BOC">Bocas del Toro</option>
+<option value="HER">Herrera</option>
+<option value="LS">Los Santos</option>
+<option value="VER">Veraguas</option>
+
+          </select>
+        </div>
+        <div class="filter-item">
+          <label>Dormitorios Mínimos</label>
+          <select id="filter-bedrooms">
+            <option value="">Cualquiera</option>
+            <option value="2">2+ Dormitorios</option>
+            <option value="3" selected>3+ Dormitorios</option>
+            <option value="4">4+ Dormitorios</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label>Precio Máximo Total</label>
+          <input type="number" id="filter-max-price" placeholder="Sin límite">
+        </div>
+        <div class="filter-actions">
+          <button id="btn-apply-filters" class="btn btn-primary">Filtrar</button>
+          <button id="btn-reset-filters" class="btn btn-secondary">Limpiar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Properties Grid -->
+  <section id="properties-section" class="properties-section">
+    <div class="section-container">
+      <div class="section-header">
+        <div>
+          <h2>Viviendas Disponibles para Minicomunidades</h2>
+          <p id="properties-count">Cargando inmuebles verificados...</p>
+        </div>
+      </div>
+      <div class="properties-grid" id="properties-grid">
+        <!-- Rendered by app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Map Section -->
+  <section id="map-section" class="map-section">
+    <div class="section-container">
+      <div class="section-header">
+        <div>
+          <h2>Mapa de Inmuebles en Todo el Territorio</h2>
+          <p>Explora ubicaciones verificadas con OpenStreetMap (Sin claves API)</p>
+        </div>
+      </div>
+      <div id="main-map" class="interactive-map"></div>
+    </div>
+  </section>
+
+  <!-- AI Voice Assistant Floating Widget -->
+  <div class="voice-assistant-fab" id="voice-assistant-fab">
+    <button class="fab-btn" id="fab-toggle-btn">
+      <span class="fab-mic">🎙️</span>
+      <span class="fab-text">Asistente de Voz</span>
+    </button>
+  </div>
+
+  <div class="voice-modal" id="voice-modal">
+    <div class="voice-modal-content">
+      <div class="voice-modal-header">
+        <h3>Asistente Inteligente de Vivienda</h3>
+        <button class="btn-close" id="voice-modal-close">&times;</button>
+      </div>
+      <div class="voice-modal-body">
+        <p class="voice-desc">
+          Habla o escribe tu consulta sobre arriendos, reparto o roomies. Conectado a WhatsApp +34 603 331 391.
+        </p>
+        <div class="voice-status" id="voice-status">Listo para escuchar...</div>
+        <div class="voice-input-row">
+          <input type="text" id="voice-text-input" placeholder="Escribe tu mensaje...">
+          <button id="btn-voice-send" class="btn btn-primary">Enviar</button>
+          <button id="btn-voice-mic" class="btn btn-mic">🎤</button>
+        </div>
+        <div class="voice-response-box" id="voice-response-box"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Modal -->
+  <div class="admin-modal" id="admin-modal">
+    <div class="admin-modal-content">
+      <div class="admin-modal-header">
+        <h3>Panel de Control y Visitas</h3>
+        <button class="btn-close" id="admin-modal-close">&times;</button>
+      </div>
+      <div class="admin-modal-body" id="admin-login-view">
+        <p>Introduce la contraseña de administración:</p>
+        <div class="admin-login-row">
+          <input type="password" id="admin-pass-input" placeholder="••••••••">
+          <button id="btn-admin-login-submit" class="btn btn-primary">Entrar</button>
+        </div>
+      </div>
+      <div class="admin-dashboard-view hidden" id="admin-dashboard-view">
+        <div class="admin-stats-row" id="admin-stats-row"></div>
+        <h4>Mapa de Origen de Visitas (Leaflet OSM)</h4>
+        <div id="admin-origin-map" class="admin-origin-map"></div>
+        <h4>Registro de Acceso en Tiempo Real</h4>
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>IP</th>
+                <th>País / Ciudad</th>
+                <th>Path</th>
+                <th>Dispositivo</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="admin-logs-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p>&copy; 2026 FindHome Panamá. Todos los derechos reservados. Red de Vivienda Digna.</p>
+      <p>Coordinación oficial en WhatsApp: +34 603 331 391</p>
+    </div>
+  </footer>
+
+  <script src="static/js/app.js?v=1"></script>
+</body>
+</html>
